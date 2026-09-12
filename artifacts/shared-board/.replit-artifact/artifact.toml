@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Shared Board"
+description = "A collaborative live board where Om and teammates can post ideas, react to them, and follow recent activity in one shared workspace."
+version = "1.0.0"
+id = "artifacts/shared-board"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18290
+
+[services.development]
+run = "pnpm --filter @workspace/shared-board run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/shared-board", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/shared-board/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18290"
+BASE_PATH = "/"

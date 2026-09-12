@@ -1,0 +1,1 @@
+- [Generated client DOM iterable support](generated-client-dom-iterable.md) — generated transport helpers may require `dom.iterable` for Headers.entries().

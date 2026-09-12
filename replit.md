@@ -1,6 +1,6 @@
-# [Project name]
+# Shared Board
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Shared Board is a collaborative live board where Om and teammates can post ideas, questions, and updates, react to notes, and follow recent room activity.
 
 ## Run & Operate
 
@@ -22,23 +22,36 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/shared-board/src/App.tsx` — responsive board workspace and interaction flows
+- `artifacts/shared-board/src/index.css` — shared board visual tokens, typography, animation, and responsive styling
+- `lib/api-spec/openapi.yaml` — source-of-truth API contract
+- `artifacts/api-server/src/routes/board.ts` — board API routes
+- `lib/db/src/schema/board.ts` — Drizzle schema for items, reactions, and activity
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The board uses the existing shared Express API and PostgreSQL workspace rather than a client-only store, so posts and reactions survive reloads.
+- `Om` is the current board identity for this first version; the API keeps the actor name explicit so auth can be added without changing item or activity shapes.
+- Board activity is recorded as its own timeline so recent participation can be shown without reconstructing events from the current item state.
+- The frontend invalidates item, activity, and summary queries after every mutation so each surface stays consistent.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Browse seeded and newly created board notes
+- Filter by idea, question, or update and search title, body, or author
+- Create notes as Om
+- React or remove a reaction from a note
+- Remove notes with confirmation
+- Review live summary counts and recent room activity
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Use Om as the displayed user name.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Generated API client code uses `Headers.entries()`, so the API client TypeScript config must include `dom.iterable`.
+- Restart both the API and shared-board workflows after backend or frontend changes so the preview uses the current build.
 
 ## Pointers
 

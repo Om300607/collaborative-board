@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: board
+    description: Shared board operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,119 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /board/items:
+    get:
+      operationId: listBoardItems
+      tags: [board]
+      summary: List shared board items
+      responses:
+        "200":
+          description: Board items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BoardItem"
+    post:
+      operationId: createBoardItem
+      tags: [board]
+      summary: Create a shared board item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BoardItemInput"
+      responses:
+        "201":
+          description: Created board item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BoardItem"
+        "400":
+          description: Invalid board item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /board/items/{id}/reaction:
+    patch:
+      operationId: toggleBoardItemReaction
+      tags: [board]
+      summary: Toggle the current user's reaction
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReactionInput"
+      responses:
+        "200":
+          description: Updated board item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BoardItem"
+        "404":
+          description: Board item not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /board/items/{id}:
+    delete:
+      operationId: deleteBoardItem
+      tags: [board]
+      summary: Delete a board item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted board item
+        "404":
+          description: Board item not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /board/activity:
+    get:
+      operationId: listBoardActivity
+      tags: [board]
+      summary: List recent board activity
+      responses:
+        "200":
+          description: Recent activity
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BoardActivity"
+  /board/summary:
+    get:
+      operationId: getBoardSummary
+      tags: [board]
+      summary: Get board summary
+      responses:
+        "200":
+          description: Board summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BoardSummary"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +148,120 @@ components:
           type: string
       required:
         - status
+    BoardItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        body:
+          type: string
+        category:
+          type: string
+          enum: [idea, question, update]
+        authorName:
+          type: string
+        reactions:
+          type: integer
+        reactedByCurrentUser:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - body
+        - category
+        - authorName
+        - reactions
+        - reactedByCurrentUser
+        - createdAt
+        - updatedAt
+    BoardItemInput:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        body:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        category:
+          type: string
+          enum: [idea, question, update]
+        authorName:
+          type: string
+          minLength: 1
+          maxLength: 40
+      required:
+        - title
+        - body
+        - category
+        - authorName
+    ReactionInput:
+      type: object
+      properties:
+        authorName:
+          type: string
+          minLength: 1
+          maxLength: 40
+      required:
+        - authorName
+    BoardActivity:
+      type: object
+      properties:
+        id:
+          type: integer
+        itemId:
+          type: integer
+        actorName:
+          type: string
+        action:
+          type: string
+          enum: [created, reacted, unreacted, deleted]
+        itemTitle:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - itemId
+        - actorName
+        - action
+        - itemTitle
+        - createdAt
+    BoardSummary:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+        ideas:
+          type: integer
+        questions:
+          type: integer
+        updates:
+          type: integer
+        reactions:
+          type: integer
+      required:
+        - totalItems
+        - ideas
+        - questions
+        - updates
+        - reactions
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
 

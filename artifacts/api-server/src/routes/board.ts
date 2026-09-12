@@ -52,7 +52,7 @@ router.get("/board/items", async (req, res) => {
     );
     res.json(data);
   } catch (error) {
-    req.log.error({ err: error }, "Failed to list board items");
+    (req as any).log.error({ err: error }, "Failed to list board items");
     res.status(500).json({ error: "Unable to load board items" });
   }
 });
@@ -88,7 +88,7 @@ router.post("/board/items", async (req, res) => {
     };
     res.status(201).json(data);
   } catch (error) {
-    req.log.error({ err: error }, "Failed to create board item");
+    (req as any).log.error({ err: error }, "Failed to create board item");
     res.status(500).json({ error: "Unable to create board item" });
   }
 });
@@ -152,7 +152,7 @@ router.patch("/board/items/:id/reaction", async (req, res) => {
 
     res.json(toBoardItem(updatedItem, reacted && actorName === CURRENT_USER));
   } catch (error) {
-    req.log.error({ err: error }, "Failed to toggle board reaction");
+    (req as any).log.error({ err: error }, "Failed to toggle board reaction");
     res.status(500).json({ error: "Unable to update reaction" });
   }
 });
@@ -184,7 +184,7 @@ router.delete("/board/items/:id", async (req, res) => {
     });
     res.status(204).send();
   } catch (error) {
-    req.log.error({ err: error }, "Failed to delete board item");
+    (req as any).log.error({ err: error }, "Failed to delete board item");
     res.status(500).json({ error: "Unable to delete board item" });
   }
 });
@@ -198,7 +198,7 @@ router.get("/board/activity", async (req, res) => {
       .limit(12);
     res.json(ListBoardActivityResponse.parse(activity));
   } catch (error) {
-    req.log.error({ err: error }, "Failed to list board activity");
+    (req as any).log.error({ err: error }, "Failed to list board activity");
     res.status(500).json({ error: "Unable to load activity" });
   }
 });
@@ -229,7 +229,7 @@ router.get("/board/summary", async (req, res) => {
       }),
     );
   } catch (error) {
-    req.log.error({ err: error }, "Failed to load board summary");
+    (req as any).log.error({ err: error }, "Failed to load board summary");
     res.status(500).json({ error: "Unable to load board summary" });
   }
 });

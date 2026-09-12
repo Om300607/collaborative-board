@@ -52,7 +52,7 @@ router.get("/board/items", async (req, res) => {
     );
     res.json(data);
   } catch (error) {
-    (req as any).log.error({ err: error }, "Failed to list board items");
+    console.error("Failed to list board items", error);
     res.status(500).json({ error: "Unable to load board items" });
   }
 });
@@ -88,7 +88,7 @@ router.post("/board/items", async (req, res) => {
     };
     res.status(201).json(data);
   } catch (error) {
-    (req as any).log.error({ err: error }, "Failed to create board item");
+    console.error("Failed to create board item", error);
     res.status(500).json({ error: "Unable to create board item" });
   }
 });
@@ -152,7 +152,7 @@ router.patch("/board/items/:id/reaction", async (req, res) => {
 
     res.json(toBoardItem(updatedItem, reacted && actorName === CURRENT_USER));
   } catch (error) {
-    (req as any).log.error({ err: error }, "Failed to toggle board reaction");
+    console.error("Failed to toggle board reaction", error);
     res.status(500).json({ error: "Unable to update reaction" });
   }
 });
@@ -184,7 +184,7 @@ router.delete("/board/items/:id", async (req, res) => {
     });
     res.status(204).send();
   } catch (error) {
-    (req as any).log.error({ err: error }, "Failed to delete board item");
+    console.error("Failed to delete board item", error);
     res.status(500).json({ error: "Unable to delete board item" });
   }
 });
@@ -198,7 +198,7 @@ router.get("/board/activity", async (req, res) => {
       .limit(12);
     res.json(ListBoardActivityResponse.parse(activity));
   } catch (error) {
-    (req as any).log.error({ err: error }, "Failed to list board activity");
+    console.error("Failed to list board activity", error);
     res.status(500).json({ error: "Unable to load activity" });
   }
 });
@@ -229,7 +229,7 @@ router.get("/board/summary", async (req, res) => {
       }),
     );
   } catch (error) {
-    (req as any).log.error({ err: error }, "Failed to load board summary");
+    console.error("Failed to load board summary", error);
     res.status(500).json({ error: "Unable to load board summary" });
   }
 });
